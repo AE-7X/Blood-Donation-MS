@@ -1,0 +1,443 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blood Donation System</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.7; color:#111; background:#fdfdfd; }
+
+/* Navbar */
+nav {
+    background: rgba(255,255,255,0.95);
+    padding: 15px 50px;
+    display:flex; justify-content:center; gap:25px;
+    position:sticky; top:0; z-index:100;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+nav a { color:#111; text-decoration:none; font-weight:600; padding:10px 18px; border-radius:8px; transition:all 0.3s; display:flex; align-items:center; }
+nav a:hover { background:crimson; color:#fff; }
+
+/* Blinking urgent badge in navbar */
+.urgent-badge {
+    display: inline-block;
+    margin-left: 5px;
+    color: crimson;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+}
+#urgentNav:hover { animation: pulseNav 1.5s infinite; }
+@keyframes pulseNav {
+    0% { background-color: rgba(255,0,0,0.1); }
+    50% { background-color: crimson; }
+    100% { background-color: rgba(255,0,0,0.1); }
+}
+
+/* Hero Header */
+header {
+    position:relative;
+    background:url("{% static 'images/homebg0.png' %}") center/cover no-repeat;
+    height:90vh;
+    display:flex; align-items:center; justify-content:left; padding-left:60px;
+}
+.hero-content { position:relative; max-width:600px; animation:slideIn 1s ease-out forwards; opacity:0; }
+.hero-content h1 { font-size:3.2em; line-height:1.2; margin-bottom:15px; color:#fff; }
+.hero-content p { font-size:1.2em; line-height:1.5; color:#fff; }
+@keyframes slideIn { 0% { transform:translateY(50px); opacity:0; } 100% { transform:translateY(0); opacity:1; } }
+
+/* Stats Section */
+.stats-section {
+    display:flex;
+    justify-content:center;
+    gap:250px;
+    background:#ffffff;
+    padding:40px 20px;
+    text-align:center;
+    flex-wrap:wrap;
+}
+.stats-card {
+    background:#fff;
+    padding:50px 40px;
+    border-radius:15px;
+    min-width:180px;
+}
+.stats-card h3 { font-size:1.4em; margin-bottom:10px; color:crimson; }
+.stats-card p { font-size:3em; font-weight:700; color:#111; }
+
+/* Sections */
+.section-card { background:transparent; padding:40px 30px; max-width:1100px; margin:50px auto; text-align:left; }
+.section-card h2 { color:crimson; font-size:2.4em; margin-bottom:20px; text-align:center; }
+.section-card p, .section-card ul { font-size:1.1em; line-height:1.6; color:#111; }
+.section-card ul { list-style:disc; padding-left:20px; }
+.section-card ul li { margin:10px 0; }
+
+/* Blood Type */
+#bloodType { padding:12px 20px; border-radius:8px; border:2px solid #000000; font-size:1.1em; margin:20px auto; display:block; max-width:300px; }
+
+/* Blood Compatibility */
+.compatibility-wrapper { display:flex; gap:30px; flex-wrap:wrap; justify-content:flex-start; align-items:center; }
+.compatibility-cards-right { display:flex; flex-direction:column; gap:20px; }
+.compatibility-card { background:#ffe5e5; border-radius:15px; padding:25px; text-align:center; min-width:250px; }
+.compatibility-card h3 { font-size:1.3em; margin-bottom:10px; color:crimson; }
+.compatibility-card p { font-size:1.1em; color:#111; }
+.compatibility-image img { max-height:380px; border-radius:15px; box-shadow:2px 2px 12px rgba(0,0,0,0.1); }
+
+/* Eligibility Button */
+.btn-eligibility { background:crimson; color:white; padding:12px 25px; border-radius:8px; font-weight:bold; text-decoration:none; transition:0.3s; }
+.btn-eligibility:hover { background:darkred; }
+
+/* CARDS SECTION WITH FULL-WIDTH BACKGROUND */
+.cards-section {
+    position:relative;
+    background:url("{% static 'images/h2.png' %}") center/cover no-repeat;
+    width:100%;
+    padding:80px 20px 100px 20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+    gap:30px;
+    justify-items:center;
+}
+.card {
+    background:rgba(255,255,255,0.9);
+    color:#111;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    transition:all 0.3s;
+    box-shadow:2px 2px 16px rgba(0,0,0,0.15);
+    width:90%;
+    max-width:300px;
+}
+.card:hover { transform:translateY(-8px) scale(1.03); background:#ffffff; }
+.card h2 { font-size:1.8em; margin-bottom:15px; color:crimson; }
+.card p { margin-bottom:20px; }
+.card a img { display:block; margin:0 auto; width:80px; height:80px; transition: transform 0.3s ease; filter: drop-shadow(0 0 5px rgb(255, 0, 0)); }
+.card a img:hover { transform:scale(1.1); }
+
+
+
+/* Footer Section */
+footer {
+    background: #00C4B0;
+    color: white;
+    padding: 30px 10px;
+    text-align: center;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.footer-container p {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 15px 0;
+}
+
+.social-icons a {
+    color: white;
+    font-size: 1.8em;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    transform: scale(1.2);
+}
+
+.social.instagram:hover { color: #E1306C; }   /* Instagram pink */
+.social.linkedin:hover { color: #0A66C2; }   /* LinkedIn blue */
+.social.github:hover { color: #000000; }    /* Twitter sky blue */
+.social.email:hover { color: #EA4335; }      /* Gmail red */
+
+
+/* Sidebar & Profile Button */
+#overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:900; }
+#sidebar { position:fixed; top:0; left:-350px; width:320px; height:100%; background:#fff; color:#111; box-shadow:4px 0 12px rgba(0,0,0,0.1); z-index:1000; display:flex; flex-direction:column; padding:30px 20px; transition:left 0.4s ease; }
+#sidebar h2 { color:crimson; text-align:center; margin-bottom:25px; }
+#sidebar p, #sidebar a { color:#111; margin:10px 0; display:block; font-weight:500; }
+#sidebar a { text-decoration:none; border-radius:6px; cursor:pointer; padding:12px; background:crimson; color:#fff; text-align:center; transition:all 0.3s; }
+#sidebar a:hover { background:darkred; }
+#closeSidebarBtn { margin-top:20px; background:#ccc; color:#111; padding:12px; border-radius:6px; text-align:center; cursor:pointer; transition:all 0.3s; }
+#closeSidebarBtn:hover { background:crimson; color:#fff; }
+#profileBtn { position:fixed; top:10px; left:20px; z-index:1010; background-color:#fefefe; border:none; padding:14px; border-radius:50%; cursor:pointer; font-size:1.3em; color:#fff; transition:0.3s; }
+#profileBtn:hover { background-color:#00C4B0; }
+
+/* Responsive */
+@media(max-width:900px) { header { height:70vh; padding-left:30px; } header h1 { font-size:2.4em; } .compatibility-wrapper { flex-direction:column; align-items:center; } .compatibility-image img { max-height:300px; } .stats-section { flex-direction:column; gap:25px; } }
+@media(max-width:600px) { header h1 { font-size:2em; } .section-card { padding:30px 20px; margin:30px 15px; } .cards-section { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- Overlay -->
+<div id="overlay" onclick="closeSidebar()"></div>
+<button id="profileBtn" onclick="openSidebar()">👤</button>
+
+<!-- Sidebar -->
+<div id="sidebar">
+    {% if donor_logged_in %}
+    <div>
+        <h2>Donor Profile</h2>
+        <p><b>Name:</b> {{ donor_name }}</p>
+        <p><b>Email:</b> {{ request.session.donor_email }}</p>
+        <a href="{% url 'donor_profile' %}">View Profile</a>
+        <a href="{% url 'donor_logout' %}" style="color:red;">Logout</a>
+    </div>
+    {% else %}
+        <a href="{% url 'donor_login' %}" style="margin-top:50px;">Donor Login</a>
+    {% endif %}
+    {% if hospital_logged_in %}
+    <div style="margin-top:30px;">
+        <h2>Hospital Profile</h2>
+        <p><b>Name:</b> {{ hospital_name }}</p>
+        <p><b>Email:</b> {{ request.session.hospital_email }}</p>
+        <a href="{% url 'hospital_profile' %}">View Profile</a>
+        <a href="{% url 'hospital_logout' %}" style="color:red;">Logout</a>
+    </div>
+    {% else %}
+        <a href="{% url 'hospital_login' %}" style="margin-top:30px;">Hospital Login</a>
+    {% endif %}
+    <div id="closeSidebarBtn" onclick="closeSidebar()">× Close</div>
+</div>
+
+<!-- Navbar -->
+<nav>
+    <a href="{% url 'donor_register' %}">Donor Register</a>
+    <a href="{% url 'search_donors' %}">Search Donors</a>
+    <a href="{% url 'request_blood' %}">Request Blood</a>
+    <a href="{% url 'hospital_register' %}">Hospital Register</a>
+    <a href="{% url 'hospital_dashboard' %}">Hospital Dashboard</a>
+    <a href="{% url 'blood_requests_list' %}" id="urgentNav">
+        Urgent
+        <span class="urgent-badge"> ⚠️ </span>
+    </a>
+</nav>
+
+<!-- Hero -->
+<header>
+    <div class="hero-content">
+        <h1>Save Lives, Donate Blood Today</h1>
+        <p>Your gift, someone’s future.</p>
+    </div>
+</header>
+
+<!-- Why Donate -->
+<section class="section-card">
+    <h2>Why Donate Blood?</h2>
+    <p>Blood donation is a noble act that saves millions of lives every year. A single unit of blood can save up to three lives.</p>
+    <ul>
+        <li>Maintains adequate blood supply in hospitals.</li>
+        <li>Saves lives during emergencies and surgeries.</li>
+        <li>Improves blood flow and reduces iron overload.</li>
+        <li>Regular donors enjoy health checkups and improved well-being.</li>
+    </ul>
+</section>
+
+
+
+<!-- Stats Section (Below Why Donate) -->
+<section class="stats-section">
+    <div class="stats-card">
+        <h3>Total Donors</h3>
+        <p class="counter" data-target="{{ total_donors }}">0</p>
+    </div>
+    <div class="stats-card">
+        <h3>Total Hospitals</h3>
+        <p class="counter" data-target="{{ total_hospitals }}">0</p>
+    </div>
+    <div class="stats-card">
+        <h3>Total Requests</h3>
+        <p class="counter" data-target="{{ total_requests }}">0</p>
+    </div>
+</section>
+
+<!-- Blood Compatibility -->
+<section class="section-card">
+    <h2>Select Your Blood Type</h2>
+    <select id="bloodType" onchange="showCompatibility()">
+        <option value="">-- Select Blood Type --</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+    </select>
+
+    <div class="compatibility-wrapper">
+        <div class="compatibility-image">
+            <img src="{% static 'images/h1.jpg' %}" alt="Blood Compatibility">
+        </div>
+        <div class="compatibility-cards-right">
+            <div class="compatibility-card">
+                <h3>You Can Receive From:</h3>
+                <p id="receiveList">-</p>
+            </div>
+            <div class="compatibility-card">
+                <h3>You Can Donate To:</h3>
+                <p id="donateList">-</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Eligibility -->
+<section class="section-card">
+    <h2>Eligibility to Donate Blood</h2>
+    <ul>
+        <li>Age 18–65 years.</li>
+        <li>Weight at least 50 kg.</li>
+        <li>Not donated in last 3 months.</li>
+        <li>Free from infections/major illnesses.</li>
+        <li>Have a healthy meal before donating.</li>
+    </ul>
+    <div style="text-align:center; margin-top:20px;">
+        <a href="{% url 'detailed_health_check' %}" class="btn-eligibility">Check Eligibility</a>
+    </div>
+</section>
+
+<!-- Cards Section Full-width -->
+<section class="cards-section">
+    <div class="card">
+        <h2>Become a Donor</h2>
+        <p>Register now and help save lives in your community.</p>
+        <a href="{% url 'donor_register' %}">
+            <img src="{% static 'images/s1.png' %}" alt="Donor Logo">
+        </a>
+    </div>
+    <div class="card">
+        <h2>Request Blood</h2>
+        <p>Submit a request and connect with donors nearby.</p>
+        <a href="{% url 'request_blood' %}">
+            <img src="{% static 'images/s2.png' %}" alt="Request Logo">
+        </a>
+    </div>
+    <div class="card">
+        <h2>Hospital Services</h2>
+        <p>Hospitals can manage blood requirements efficiently.</p>
+        <a href="{% url 'hospital_register' %}">
+            <img src="{% static 'images/s4.png' %}" alt="Hospital Logo">
+        </a>
+    </div>
+</section>
+
+<!-- Feedback Section -->
+<section class="section-card" id="feedback" style="background:#fff; padding:60px 30px; border-top:1px solid #ffffff; margin-bottom:60px; border-radius:15px; max-width:800px;">
+    <h2 style="color:crimson; text-align:center; margin-bottom:25px; font-size:2.2em;">We Value Your Feedback</h2>
+    <p style="text-align:center; color:#000000; margin-bottom:30px;">
+        Share your thoughts, suggestions, or experiences with us. Your feedback helps us improve.
+    </p>
+
+    <form method="POST" style="display:flex; flex-direction:column; gap:20px; max-width:600px; margin:auto;">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Your Name" required 
+               style="padding:12px 15px; border:1px solid #ccc; border-radius:8px; font-size:1em;">
+        <input type="email" name="email" placeholder="Your Email" required 
+               style="padding:12px 15px; border:1px solid #ccc; border-radius:8px; font-size:1em;">
+        <textarea name="message" placeholder="Your Feedback" rows="4" required 
+                  style="padding:12px 15px; border:1px solid #ccc; border-radius:8px; font-size:1em; resize:none;"></textarea>
+
+        <button type="submit" 
+                style="background:crimson; color:white; padding:12px 25px; border:none; border-radius:8px; font-size:1.1em; font-weight:600; cursor:pointer; transition:0.3s;">
+            Submit Feedback
+        </button>
+    </form>
+
+    {% if messages %}
+        <div style="margin-top:20px; text-align:center;">
+            {% for message in messages %}
+                <p style="color:green; font-weight:600;">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+
+
+<!-- Footer -->
+<footer>
+    <div class="footer-container">
+        <p>Connect with us</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/_adwaith_e/" target="_blank" class="social instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/adwaith-e-133445267/?trk=PROFILE_DROP_DOWN" target="_blank" class="social linkedin">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://github.com/AE-7X" target="_blank" class="social github">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:adwaithe101@gmail.com" class="social email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+        <p style="margin-top: 10px;">&copy; 2025 Blood Donation System | All Rights Reserved</p>
+    </div>
+</footer>
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- Chatbot Embed - Bottom Right Widget -->
+<div style="position: fixed; bottom: 5px; right: 5px; z-index: 9999; width: 480px; max-width: 95vw; border-radius: 16px; overflow: hidden;">
+  <iframe
+    src="https://bot.orimon.ai/deploy/index.html?tenantId=9d64b62e-b3d1-4a21-a63b-b75f4a664bee&testBot=true&defaultOpen=False"
+    title="Blood Donation Chatbot"
+    width="450"
+    height="660"
+    style="border: none;">
+  </iframe>
+</div>
+
+<script>
+const compatibility = {
+    "O+":{receive:["O+","O-"],donate:["O+","A+","B+","AB+"]},
+    "O-":{receive:["O-"],donate:["O+","O-","A+","A-","B+","B-","AB+","AB-"]},
+    "A+":{receive:["A+","A-","O+","O-"],donate:["A+","AB+"]},
+    "A-":{receive:["A-","O-"],donate:["A+","A-","AB+","AB-"]},
+    "B+":{receive:["B+","B-","O+","O-"],donate:["B+","AB+"]},
+    "B-":{receive:["B-","O-"],donate:["B+","B-","AB+","AB-"]},
+    "AB+":{receive:["AB+","AB-","A+","A-","B+","B-","O+","O-"],donate:["AB+"]},
+    "AB-":{receive:["AB-","A-","B-","O-"],donate:["AB+","AB-"]}
+};
+function showCompatibility(){
+    let t=document.getElementById("bloodType").value;
+    let d=document.getElementById("donateList");
+    let r=document.getElementById("receiveList");
+    if(t&&compatibility[t]){d.textContent=compatibility[t].donate.join(", "); r.textContent=compatibility[t].receive.join(", ");} 
+    else {d.textContent="-"; r.textContent="-";}
+}
+function openSidebar(){document.getElementById("sidebar").style.left="0";document.getElementById("overlay").style.display="block";}
+function closeSidebar(){document.getElementById("sidebar").style.left="-350px";document.getElementById("overlay").style.display="none";}
+
+// Animated Counter
+const counters = document.querySelectorAll('.counter');
+counters.forEach(counter => {
+    const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const speed = 200; // speed
+        const increment = Math.ceil(target / speed);
+
+        if (count < target) {
+            counter.innerText = count + increment > target ? target : count + increment;
+            setTimeout(updateCount, 500); 
+        } else {
+            counter.innerText = target;
+        }
+    };
+    updateCount();
+});
+
+</script>
+</body>
+</html>

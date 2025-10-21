@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Blood Request</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #ff9999, #ff4d4d);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+    .form-container {
+        background: #fff;
+        padding: 30px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+    }
+    h2 {
+        color: crimson;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1em;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: crimson;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1em;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    button:hover {
+        background-color: darkred;
+    }
+    .messages {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+    .messages li {
+        background-color: rgba(255,0,0,0.3);
+        color: #fff;
+        padding: 8px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Add Blood Request</h2>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Patient Name</label>
+            <input type="text" name="patient_name" required>
+        </div>
+        <div class="form-group">
+            <label>Blood Group Needed</label>
+            <select name="blood_group_needed" required>
+                <option value="">Select</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Contact Number</label>
+            <input type="text" name="contact_number" required>
+        </div>
+        <div class="form-group">
+            <label>Location</label>
+            <input type="text" name="location" required>
+        </div>
+        <div class="form-group">
+            <label>State</label>
+            <input type="text" name="state" value="Kerala" readonly>
+        </div>
+        <div class="form-group">
+            <label>District</label>
+            <input type="text" name="district" required>
+        </div>
+
+        <button type="submit">Add Request</button>
+    </form>
+</div>
+
+</body>
+</html>

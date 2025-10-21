@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Hospitals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff5f5;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #cc0000;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 15px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .card h3 {
+            margin: 0 0 10px;
+            color: #b30000;
+        }
+        .card p {
+            margin: 5px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            margin-top: 10px;
+            background: #cc0000;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #990000;
+        }
+        .empty-message {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registered Hospitals</h1>
+
+    {% for hospital in hospitals %}
+<div class="card">
+    <h3>{{ hospital.name }}</h3>
+    <p>📍 {{ hospital.location }}</p>
+    <p>📞 {{ hospital.phone }}</p>
+    <p>✉️ {{ hospital.email }}</p>
+</div>
+{% empty %}
+<p>No hospitals registered yet.</p>
+{% endfor %}
+
+    <p class="empty-message">No hospitals registered yet.</p>
+    {% endfor %}
+</body>
+</html>

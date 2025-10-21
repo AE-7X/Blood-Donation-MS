@@ -1,0 +1,32 @@
+<h2>Donate Blood to {{ hospital.name }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  
+  <!-- Render each field manually to apply styling -->
+  <p>
+    {{ form.donor_name.label_tag }}
+    {{ form.donor_name }}
+    {{ form.donor_name.errors }}
+  </p>
+  
+  <p>
+    {{ form.donor_age.label_tag }}
+    {{ form.donor_age }}
+    {{ form.donor_age.errors }}
+  </p>
+  
+  <p>
+    {{ form.donor_blood_group.label_tag }}
+    {{ form.donor_blood_group }}
+    {{ form.donor_blood_group.errors }}
+  </p>
+  
+  <p>
+    {{ form.donor_contact.label_tag }}
+    {{ form.donor_contact }}
+    {{ form.donor_contact.errors }}
+  </p>
+  
+  <button type="submit" class="btn">Submit Request</button>
+</form>

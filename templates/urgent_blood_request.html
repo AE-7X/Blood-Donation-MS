@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; }
+    .container { padding: 20px; border: 1px solid #ddd; border-radius: 10px; max-width: 600px; margin: auto; background: #f9f9f9; }
+    h2 { color: #d32f2f; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    td { padding: 8px; border-bottom: 1px solid #ccc; }
+    strong { color: #b71c1c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🚨 Urgent Blood Request</h2>
+    <p>A new urgent blood request has been posted. Details are as follows:</p>
+    <table>
+      <tr><td><strong>Patient Name:</strong></td><td>{{ patient_name }}</td></tr>
+      <tr><td><strong>Hospital Name:</strong></td><td>{{ hospital_name }}</td></tr>
+      <tr><td><strong>Blood Group Needed:</strong></td><td>{{ blood_group_needed }}</td></tr>
+      <tr><td><strong>Location:</strong></td><td>{{ location }}</td></tr>
+      <tr><td><strong>Contact Number:</strong></td><td>{{ contact_number }}</td></tr>
+      <tr><td><strong>Age:</strong></td><td>{{ age }}</td></tr>
+      <tr><td><strong>Gender:</strong></td><td>{{ gender }}</td></tr>
+    </table>
+    <p>Please respond immediately if you can donate.</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Blood Stock - {{ hospital.name }}</title>
+<style>
+/* GLOBAL STYLES */
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color:#111;
+    background: url("{% static 'images/homebg0.png' %}") center/cover no-repeat fixed;
+    min-height:100vh;
+}
+
+/* PAGE HEADING */
+h1 {
+    text-align: center;
+    color: crimson;
+    font-size: 3em;
+    margin:40px 20px 20px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+/* FORM CARD */
+form {
+    max-width:650px;
+    margin:0 auto 50px;
+    background: rgba(255,255,255,0.95);
+    padding:30px 25px;
+    border-radius:15px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.15);
+    text-align:center;
+}
+form label {
+    font-weight:bold;
+    display:block;
+    margin-top:15px;
+    text-align:left;
+}
+form input, form select {
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:1em;
+}
+form button {
+    margin-top:20px;
+    width:100%;
+    background:crimson;
+    color:#fff;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+form button:hover { background: darkred; }
+
+/* BACK BUTTON INSIDE FORM */
+form .back-btn {
+    display:block;
+    margin-top:20px;
+    background: crimson;
+    color:#fff;
+    padding:12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    width:50%;
+    margin-left:auto;
+    margin-right:auto;
+    transition:0.3s;
+}
+form .back-btn:hover { background: crimson; }
+
+/* TABLE CARD */
+table {
+    width:90%;
+    max-width:900px;
+    margin:30px auto 60px;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.95);
+    box-shadow:0 6px 25px rgba(0,0,0,0.1);
+    border-radius:12px;
+    overflow:hidden;
+}
+th, td {
+    padding:12px 15px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+}
+th { background:crimson; color:#fff; }
+tr:hover { background: #fdf2f2; }
+
+/* LOW STOCK ALERT */
+.low-stock { color:red; font-weight:bold; animation: blink 1.5s infinite; }
+@keyframes blink { 50% { opacity:0.4; } }
+
+/* DELETE LINK */
+a.delete-link {
+    color: crimson;
+    text-decoration: none;
+    font-weight:bold;
+    transition:0.3s;
+}
+a.delete-link:hover { text-decoration: underline; }
+
+/* TABLE HEADING */
+h3 {
+    text-align:center;
+    color:#333;
+    margin-top:50px;
+    margin-bottom:20px;
+}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+    form, table { width:95%; }
+    h1 { font-size:2.2em; }
+    form .back-btn { width:70%; }
+}
+</style>
+</head>
+<body>
+
+<h1>Manage Blood Stock - {{ hospital.name }}</h1>
+
+<!-- FORM -->
+<form method="POST">
+    {% csrf_token %}
+    <label>Blood Type</label>
+    <select name="blood_type" required>
+        <option value="">-- Select Blood Type --</option>
+        {% for bt in blood_types %}
+            <option value="{{ bt }}">{{ bt }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Units Available</label>
+    <input type="number" name="units" min="0" required>
+
+    <label>Expiry Date</label>
+    <input type="date" name="expiry_date" required>
+
+    <button type="submit">Save / Update</button>
+
+    <!-- Back to Home inside the card -->
+    <a href="{% url 'home' %}" class="back-btn">← Back to Home</a>
+</form>
+
+<h3>Current Blood Stock</h3>
+<table>
+    <tr>
+        <th>Blood Type</th>
+        <th>Units</th>
+        <th>Expiry Date</th>
+        <th>Action</th>
+    </tr>
+    {% for stock in stocks %}
+    <tr>
+        <td>{{ stock.blood_type }}</td>
+        <td class="{% if stock.units <= 5 %}low-stock{% endif %}">{{ stock.units }}</td>
+        <td>{{ stock.expiry_date }}</td>
+        <td>
+            <a href="{% url 'delete_blood_stock' stock.id %}" class="delete-link"
+               onclick="return confirm('Delete this stock entry?')">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital Profile</title>
+<style>
+/* RESET & GLOBAL */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111;
+    background: url("{% static 'images/homebg0.png' %}") center center/cover no-repeat;
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(255,255,255,0.95);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+nav a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+nav a:hover { background: crimson; color: #fff; }
+
+/* MAIN CONTAINER */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 15px;
+}
+
+/* PROFILE & STATS CARDS */
+.card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,245,245,0.95));
+    padding: 30px 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    width: 100%;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* HEADINGS */
+h1 { text-align: center; color: #d32f2f; margin: 25px 0; }
+.card h2 { color: #d32f2f; margin-bottom: 15px; position: relative; }
+
+/* EDIT PROFILE PENCIL BUTTON */
+.edit-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #d32f2f;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+    border: 1px solid #ccc;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.edit-btn:hover { transform: scale(1.1); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+
+/* PROFILE INFO */
+.profile-card p {
+    margin: 8px 0;
+    font-size: 1em;
+}
+.profile-card span { font-weight: bold; width: 140px; display: inline-block; color: #d32f2f; }
+
+/* BUTTONS */
+.profile-buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.profile-buttons a {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s;
+    background: #d32f2f;
+    color: #fff;
+}
+.profile-buttons a:hover {
+    background: #b71c1c;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+th, td {
+    border: 1px solid #d32f2f;
+    padding: 10px;
+    text-align: center;
+}
+th { background-color: #d32f2f; color: #fff; }
+.status-accepted { color: green; font-weight: bold; }
+.status-rejected { color: red; font-weight: bold; }
+.status-pending { color: orange; font-weight: bold; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-container { flex-direction: column; align-items: center; }
+    table, th, td { font-size: 0.9em; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <a href="{% url 'search_donors' %}">Search Donors</a>
+    <a href="{% url 'request_blood' %}">Request Blood</a>
+    <a href="{% url 'hospital_dashboard' %}">Hospital Dashboard</a>
+    <a href="{% url 'blood_requests_list' %}" id="urgentNav">
+        Urgent
+        <span class="urgent-badge"> ⚠️ </span>
+    </a>
+</nav>
+
+<h1>{{ hospital.name }}</h1>
+
+<div class="profile-container">
+
+    <!-- Hospital Info -->
+    <div class="card profile-card">
+        <h2>Hospital Info
+            <a href="{% url 'edit_hospital_profile' %}" class="edit-btn">✏️</a>
+        </h2>
+        <p><span>Email:</span> {{ hospital.email }}</p>
+        <p><span>Phone:</span> {{ hospital.phone }}</p>
+        <p><span>Location:</span> {{ hospital.location }}</p>
+
+        <div class="profile-buttons">
+            <a href="{% url 'hospital_logout' %}">Logout</a>
+            <a href="{% url 'manage_blood_stock' %}">Manage Blood Stock</a>
+            <a href="/">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Donor Requests -->
+    <div class="card stats-card">
+        <h2>Donor Requests</h2>
+
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Blood Group</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for req in donor_requests %}
+            <tr>
+                <td>{{ req.donor_name }}</td>
+                <td>{{ req.donor_age }}</td>
+                <td>{{ req.donor_blood_group }}</td>
+                <td>{{ req.donor_contact }}</td>
+                <td class="status-{{ req.status|lower }}">
+                    {{ req.status }}
+                    {% if req.status != "Pending" %}
+                        ({{ req.updated_at|date:"M d, Y H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if req.status == "Pending" %}
+                        <form method="post" action="{% url 'accept_request' req.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-accept">Accept</button>
+                        </form>
+
+                        <form method="post" action="{% url 'reject_request' req.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-reject">Reject</button>
+                        </form>
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+                <tr><td colspan="6">No donor requests yet.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

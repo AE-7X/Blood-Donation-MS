@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request Blood</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111;
+    background: url("{% static 'images/homebg0.png' %}") center center/cover no-repeat;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(255,255,255,0.95);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+nav a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+nav a:hover { background: crimson; color: #fff; }
+
+/* FORM BOX */
+.form-box {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,245,245,0.95));
+    padding: 35px 45px;
+    border-radius: 15px;
+    max-width: 900px;
+    width: 100%;
+    margin: 60px auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+h1 { text-align: center; color: #d32f2f; margin-bottom: 25px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 30px; }
+.form-group { display: flex; flex-direction: column; }
+label { margin-bottom: 6px; font-weight: bold; color: #333; }
+input, select { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
+input:focus, select:focus { border-color: #d32f2f; box-shadow: 0 0 8px rgba(211,47,47,0.5); outline: none; }
+.full-width { grid-column: span 2; }
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 15px;
+}
+button, .back-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.3s, transform 0.2s;
+}
+button { background: #d32f2f; }
+button:hover { background: #b71c1c; transform: scale(1.03); }
+
+.back-btn { background: #d32f2f; }
+.back-btn:hover { background: #d32f2f; transform: scale(1.03); }
+
+.messages { list-style: none; padding: 0; margin-bottom: 15px; }
+.messages li { background-color: #f8d7da; color: #721c24; padding: 8px; margin-bottom: 8px; border-radius: 5px; text-align: center; }
+
+/* URGENT CHECKBOX */
+.urgent-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffe6e6;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-weight:500;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(255,0,0,0.2);
+}
+.urgent-label input {
+    transform: scale(1.3);
+    accent-color: #d32f2f;
+}
+.info-icon {
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+}
+.info-icon:hover::after {
+    content: "Use this option for emergency blood requests that need immediate attention.";
+    position: absolute;
+    top: -65px;
+    left: -10px;
+    width: 240px;
+    background: #333;
+    color: #fff;
+    font-size: 13px;
+    padding: 8px;
+    border-radius: 8px;
+    line-height: 1.3;
+    z-index: 10;
+}
+
+/* BLOOD REQUEST CARDS */
+.request-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    border-left: 6px solid #d32f2f;
+    transition: transform 0.2s ease-in-out;
+}
+.card.urgent { border-left-color: #ff0000; background: #ffe6e6; }
+.card:hover { transform: translateY(-3px); }
+.card strong { color: #b71c1c; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .full-width { grid-column: span 1; }
+    .form-box { padding: 25px 20px; margin: 30px 10px; }
+    .button-group { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="{% url 'donor_register' %}">Donor Register</a>
+    <a href="{% url 'search_donors' %}">Search Donors</a>
+    <a href="{% url 'hospital_dashboard' %}">Hospital Dashboard</a>
+    <a href="{% url 'blood_requests_list' %}" id="urgentNav">
+        Urgent
+        <span class="urgent-badge"> ⚠️ </span>
+    </a>
+</nav>
+
+<div class="form-box">
+    <h1>Request Blood</h1>
+
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Patient Name:</label>
+                <input type="text" name="patient_name" placeholder="Patient Name" required>
+            </div>
+            <div class="form-group">
+                <label>Hospital Name:</label>
+                <input type="text" name="hospital_name" placeholder="Hospital Name" required>
+            </div>
+            <div class="form-group">
+                <label>Blood Group Needed:</label>
+                <select name="blood_group_needed" required>
+                    <option value="">--Select Blood Group--</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>State:</label>
+                <select name="state" id="state" required>
+                    <option value="">--Select State--</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>District:</label>
+                <select name="district" id="district" required>
+                    <option value="">--Select District--</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Age:</label>
+                <input type="number" name="age" min="0" max="120" placeholder="Age" required>
+            </div>
+            <div class="form-group">
+                <label>Gender:</label>
+                <select name="gender" required>
+                    <option value="">--Select Gender--</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group full-width">
+                <label>Location (Optional):</label>
+                <input type="text" name="location" placeholder="Address" required>
+            </div>
+            <div class="form-group full-width">
+                <label>Contact Number:</label>
+                <input type="text" name="contact_number" placeholder="Phone" required>
+            </div>
+
+            <!-- URGENT CHECKBOX with info -->
+            <div class="form-group full-width">
+                <label class="urgent-label">
+                    <input type="checkbox" name="urgent">
+                    <span class="info-icon">Mark as Urgent ❗</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit">Submit Request</button>
+            <a href="/" class="back-btn">&#8592; Back to Home</a>
+        </div>
+    </form>
+</div>
+
+<!-- Existing Requests -->
+<div class="request-container">
+{% for request in requests %}
+<div class="card {% if request.urgent %}urgent{% endif %}">
+    <strong>Patient:</strong> {{ request.patient_name }} <br>
+    <strong>Hospital:</strong> {{ request.hospital_name }} <br>
+    <strong>Blood Group:</strong> {{ request.blood_group_needed }} <br>
+    <strong>State:</strong> {{ request.state }} <br>
+    <strong>District:</strong> {{ request.district }} <br>
+    <strong>Age:</strong> {{ request.age }} <br>
+    <strong>Gender:</strong> {{ request.gender }} <br>
+    <strong>Location:</strong> {{ request.location }} <br>
+    <strong>Contact:</strong> {{ request.contact_number }} <br>
+    <strong>Requested At:</strong> {{ request.created_at|date:"d M Y H:i" }}
+</div>
+{% empty %}
+{% endfor %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const districtData = {
+        "Kerala": ["Alappuzha","Ernakulam","Idukki","Kannur","Kasaragod","Kollam","Kottayam","Kozhikode","Malappuram","Palakkad","Pathanamthitta","Thiruvananthapuram","Thrissur","Wayanad"]
+    };
+    const stateSelect = document.getElementById("state");
+    const districtSelect = document.getElementById("district");
+
+    Object.keys(districtData).forEach(function(state) {
+        const option = document.createElement("option");
+        option.value = state;
+        option.textContent = state;
+        stateSelect.appendChild(option);
+    });
+
+    stateSelect.addEventListener("change", function() {
+        districtSelect.innerHTML = "<option value=''>--Select District--</option>";
+        if (districtData[this.value]) {
+            districtData[this.value].forEach(function(district) {
+                const option = document.createElement("option");
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

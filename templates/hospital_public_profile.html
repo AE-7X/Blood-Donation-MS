@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ hospital.name }} - Hospital Info</title>
+<style>
+/* GLOBAL STYLES */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111;
+    background: url("{% static 'images/homebg0.png' %}") center/cover no-repeat fixed;
+    margin: 0;
+    padding: 0;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(255,255,255,0.95);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+nav a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+nav a:hover { background: crimson; color: #fff; }
+
+/* MAIN CONTAINER */
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    padding: 50px 30px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+.container:hover { transform: translateY(-5px); }
+
+/* PAGE TITLE */
+h1 {
+    color: #d32f2f;
+    margin-bottom: 10px;
+    font-size: 2.5em;
+    letter-spacing: 1px;
+}
+
+/* INFO TEXT */
+p {
+    font-size: 16px;
+    margin: 8px 0;
+    line-height: 1.6;
+}
+strong { color: #b71c1c; }
+
+/* DONATION NOTE */
+.note {
+    margin: 25px 0 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #d32f2f;
+}
+
+/* ACTION BUTTONS */
+.actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.btn {
+    padding: 14px 28px;
+    background: #d32f2f;
+    color: #fff;
+    border-radius: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+.btn:hover {
+    background: #b71c1c;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* LIVE BLOOD STOCK TABLE */
+.stock-section {
+    margin-top: 50px;
+    text-align: center;
+}
+.stock-section h2 {
+    color: #d32f2f;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+table {
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+th, td {
+    padding: 15px;
+    text-align: center;
+    font-size: 1em;
+}
+th {
+    background: crimson;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+tr:nth-child(even) { background: #f9f9f9; }
+tr:hover { background: #ffeaea; }
+.expired { background: #ffe5e5 !important; color: red; font-weight: bold; }
+.low-stock { background: #fff4e5; color: #d98c00; }
+.good-stock { background: #e7f7e7; color: #1b8a1b; }
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+    .actions { flex-direction: column; }
+    .btn { width: 100%; text-align: center; }
+    table { font-size: 0.9em; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <a href="{% url 'donor_register' %}">Donor Register</a>
+    <a href="{% url 'search_donors' %}">Search Donors</a>
+    <a href="{% url 'request_blood' %}">Request Blood</a>
+    <a href="{% url 'hospital_dashboard' %}">Hospital Dashboard</a>
+    <a href="{% url 'blood_requests_list' %}" id="urgentNav">
+        Urgent
+        <span class="urgent-badge"> ⚠️ </span>
+    </a>
+</nav>
+
+<div class="container">
+    <h1>{{ hospital.name }}</h1>
+    <p><strong>Location:</strong> {{ hospital.location }}</p>
+    <p><strong>Phone:</strong> {{ hospital.phone }}</p>
+    <p><strong>Email:</strong> {{ hospital.email }}</p>
+
+    <div class="note">Donate your blood here to save lives!</div>
+
+    <div class="actions">
+        <a href="{% url 'donor_request' hospital.id %}" class="btn">Donate Blood</a>
+        <a href="{% url 'hospital_dashboard' %}" class="btn">← Back to Hospitals</a>
+    </div>
+
+    <!-- 🩸 LIVE BLOOD STOCK SECTION -->
+    <div class="stock-section">
+        <h3 style="color:crimson; text-align:center;">Live Blood Stock</h3>
+<table>
+  <tr>
+    <th>Blood Type</th>
+    <th>Units Available</th>
+    <th>Expiry</th>
+  </tr>
+  {% for stock in stocks %}
+  <tr>
+    <td>{{ stock.blood_type }}</td>
+    <td>{{ stock.units }}</td>
+    <td>{{ stock.expiry_date }}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="3">No stock available yet.</td></tr>
+  {% endfor %}
+</table>
+    </div>
+</div>
+
+</body>
+</html>

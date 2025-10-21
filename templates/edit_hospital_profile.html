@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Hospital Profile</title>
+<style>
+/* RESET & GLOBAL */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111;
+    background: url("{% static 'images/homebg0.png' %}") center center/cover no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FORM BOX */
+.form-box {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,245,245,0.95));
+    padding: 35px 45px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    text-align: center;
+}
+h2 {
+    color: #d32f2f;
+    margin-bottom: 25px;
+}
+
+/* FORM FIELDS */
+input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: 0.3s;
+}
+input:focus {
+    border-color: #d32f2f;
+    box-shadow: 0 0 8px rgba(211,47,47,0.5);
+    outline: none;
+}
+
+/* BUTTONS */
+button, .btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover, .btn:hover {
+    background: #b71c1c;
+    transform: scale(1.03);
+}
+
+/* MESSAGES */
+.messages { list-style: none; padding: 0; margin-bottom: 15px; }
+.messages li {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Back Button */
+.back-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #d32f2f;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.back-btn:hover { background: #b71c1c; transform: scale(1.03); }
+
+/* Responsive */
+@media (max-width: 500px) {
+    .form-box { padding: 25px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Edit Hospital Profile</h2>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="name" value="{{ hospital.name }}" placeholder="Hospital Name" required>
+        <input type="text" name="phone" value="{{ hospital.phone }}" placeholder="Phone Number" required>
+        <input type="text" name="location" value="{{ hospital.location }}" placeholder="Location" required>
+        <input type="password" name="password" placeholder="New Password (leave blank to keep current)">
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <a href="{% url 'hospital_profile' %}" class="back-btn">&#8592; Back to Profile</a>
+</div>
+</body>
+</html>

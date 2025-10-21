@@ -1,0 +1,291 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donor Registration</title>
+<style>
+/* RESET & GLOBAL */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111;
+    background: url("{% static 'images/homebg0.png' %}") center center/cover no-repeat;
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(255,255,255,0.95);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+nav a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+nav a:hover { background: crimson; color: #fff; }
+
+/* FORM BOX */
+.form-box {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,245,245,0.95));
+    padding: 35px 45px;
+    border-radius: 15px;
+    max-width: 900px;
+    width: 100%;
+    margin: 60px auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.form-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+h1 {
+    text-align: center;
+    color: #d32f2f;
+    margin-bottom: 25px;
+}
+
+/* FORM GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+.form-group { display: flex; flex-direction: column; }
+label { margin-bottom: 6px; font-weight: bold; color: #333; }
+input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+input:focus, select:focus {
+    border-color: #d32f2f;
+    box-shadow: 0 0 8px rgba(211,47,47,0.5);
+    outline: none;
+}
+.full-width { grid-column: span 2; }
+
+/* BUTTONS */
+button, .login-btn, .back-home-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover, .login-btn:hover, .back-home-btn:hover {
+    background: #b71c1c;
+    transform: scale(1.03);
+}
+
+/* MESSAGES */
+.messages { list-style: none; padding: 0; margin-bottom: 15px; }
+.messages li {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* ALIGN LINKS */
+.form-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 15px;
+}
+.form-links a {
+    display: inline-block;
+}
+
+/* PASSWORD TOGGLE */
+.password-container {
+    position: relative;
+}
+.password-container input {
+    padding-right: 35px; /* space for toggle icon */
+}
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 67%;
+    font-size: 18px;
+    cursor: pointer;
+    transform: translateY(-50%);
+    display: none; /* hidden initially */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .full-width { grid-column: span 1; }
+    .form-box { padding: 25px 20px; margin: 30px 10px; }
+    .form-links { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <a href="{% url 'search_donors' %}">Search Donors</a>
+    <a href="{% url 'request_blood' %}">Request Blood</a>
+    <a href="{% url 'hospital_dashboard' %}">Hospital Dashboard</a>
+    <a href="{% url 'blood_requests_list' %}" id="urgentNav">
+        Urgent
+        <span class="urgent-badge"> ⚠️ </span>
+    </a>
+</nav>
+
+<div class="form-box">
+    <h1>Donor Registration</h1>
+
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Name:</label>
+          <input type="text" name="name" placeholder="Name" required>
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="form-group password-container">
+          <label>Password:</label>
+          <input type="password" name="password" id="password" placeholder="Password" required>
+          <span id="togglePassword" class="eye-icon">⌣</span>
+        </div>
+        <div class="form-group">
+          <label>Phone:</label>
+          <input type="text" name="phone" placeholder="Phone" required>
+        </div>
+        <div class="form-group">
+          <label>Age:</label>
+          <input type="number" name="age" min="18" max="65"placeholder="Age" required>
+        </div>
+        <div class="form-group">
+          <label>Gender:</label>
+          <select name="gender" required>
+            <option value="">-- Select Gender --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Blood Group:</label>
+          <select name="blood_group" required>
+            <option value="">-- Select Blood Group --</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>State:</label>
+          <select name="state" id="state" required>
+            <option value="Kerala">Kerala</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>District:</label>
+          <select name="district" id="district" required>
+            <option value="">--Select District--</option>
+          </select>
+        </div>
+        <div class="form-group full-width">
+          <label>Location (optional):</label>
+          <input type="text" name="location" placeholder="Address" required>
+        </div>
+      </div>
+
+      <button type="submit">Register</button>
+
+      <div class="form-links">
+        <a href="/login/donor/" class="login-btn">Already Registered ? Login Here</a>
+        <a href="/" class="back-home-btn">&#8592; Back to Home</a>
+      </div>
+    </form>
+</div>
+
+<script>
+const keralaDistricts = [
+  "Alappuzha","Ernakulam","Idukki","Kannur","Kasaragod","Kollam",
+  "Kottayam","Kozhikode","Malappuram","Palakkad","Pathanamthitta",
+  "Thiruvananthapuram","Thrissur","Wayanad"
+];
+const districtSelect = document.getElementById("district");
+keralaDistricts.forEach(district => {
+  const option = document.createElement("option");
+  option.value = district;
+  option.textContent = district;
+  districtSelect.appendChild(option);
+});
+
+// Password toggle with open/closed icons
+const togglePassword = document.getElementById('togglePassword');
+const password = document.getElementById('password');
+
+// Show eye only when typing
+password.addEventListener('input', () => {
+    if(password.value.length > 0){
+        togglePassword.style.display = 'block';
+        togglePassword.textContent = '⌣'; // start with closed
+    } else {
+        togglePassword.style.display = 'none';
+    }
+});
+
+// Toggle password visibility & switch icon
+togglePassword.addEventListener('click', () => {
+    if(password.type === 'password'){
+        password.type = 'text';
+        togglePassword.textContent = '👁'; // open eye
+    } else {
+        password.type = 'password';
+        togglePassword.textContent = '⌣'; // closed eye
+    }
+});
+</script>
+</body>
+</html>
