@@ -38,7 +38,22 @@ A full-stack web system enabling hospitals to manage donors efficiently while en
 
 ---
 ## Screenshots
-![Home Page](screenshots/Homepage.jpeg)
+
+### Home Page
+![Home Page](screenshots/Home page.jpeg)
+
+### Donor Profile
+![Donor Profile](screenshots/Donor Profile.jpeg)
+
+### Hospital Dashboard
+![Hospital Dashboard](screenshots/Hospital Profile.jpeg)
+
+### Blood Requests
+![Blood Requests](screenshots/Blood requests.jpeg)
+
+### Search Donors
+![Search Donors](screenshots/Search donors.jpeg)
+
 
 ## 📁 How to Run Locally
 1. Clone the repository:
