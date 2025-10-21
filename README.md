@@ -38,7 +38,7 @@ A full-stack web system enabling hospitals to manage donors efficiently while en
 
 ---
 ## Screenshots
-![Home Page](blood_donation/screenshots/homepage.png)
+![Home Page](screenshots/Home page.jpeg)
 
 ## 📁 How to Run Locally
 1. Clone the repository:
