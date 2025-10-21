@@ -37,23 +37,6 @@ The goal of the Blood Donation Management System is to create a centralized digi
 A full-stack web system enabling hospitals to manage donors efficiently while ensuring donor safety and availability through verified health screening.
 
 ---
-## Screenshots
-
-### Home Page
-![Home Page](screenshots/Home page.jpeg)
-
-### Donor Profile
-![Donor Profile](screenshots/Donor Profile.jpeg)
-
-### Hospital Dashboard
-![Hospital Dashboard](screenshots/Hospital Profile.jpeg)
-
-### Blood Requests
-![Blood Requests](screenshots/Blood requests.jpeg)
-
-### Search Donors
-![Search Donors](screenshots/Search donors.jpeg)
-
 
 ## 📁 How to Run Locally
 1. Clone the repository:
